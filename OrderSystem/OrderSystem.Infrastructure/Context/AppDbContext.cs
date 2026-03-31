@@ -6,10 +6,19 @@ namespace OrderSystem.Infrastructure.Context;
 public class AppDbContext : DbContext
 {
 	public DbSet<Order> Orders { get; set; }
-	public DbSet<OutboxMessage> OutboxMessage { get; set; }
+	public DbSet<OutboxMessage> OutboxMessages { get; set; }
 
-	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+	public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
 	{
-		optionsBuilder.UseSqlServer("connectionstring");
+		
+	}
+
+	protected override void OnModelCreating(ModelBuilder modelBuilder)
+	{
+		base.OnModelCreating(modelBuilder);
+
+		modelBuilder.Entity<Order>()
+			.Property(x => x.TotalAmount)
+			.HasPrecision(18, 2);
 	}
 }
