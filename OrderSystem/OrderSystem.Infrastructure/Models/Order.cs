@@ -3,6 +3,7 @@
 public class Order
 {
 	public int Id { get; set; }
+	public string InternalOrderId { get; set; } = string.Empty;
 	public string ProductName { get; set; } = string.Empty;
 	public DateTime CreatedAt { get; set; }
 	public Status Status { get; set; }
@@ -13,6 +14,7 @@ public class Order
 public enum Status
 {
 	Created,
+	Pending,
 	Processing,
 	Completed,
 	Cancelled

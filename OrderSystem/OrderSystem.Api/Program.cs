@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using OrderSystem.Api.Services;
 using OrderSystem.Infrastructure.Context;
 
 
@@ -16,7 +17,7 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Progr
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
-
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 
 var app = builder.Build();
