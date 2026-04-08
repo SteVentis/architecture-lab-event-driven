@@ -13,5 +13,4 @@ public static class OrderCreatedMapping
 		CustomerId = order.CustomerId,
 		TotalAmount = order.TotalAmount
 	};
-	
 }

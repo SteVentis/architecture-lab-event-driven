@@ -13,9 +13,11 @@ public interface IOrderService
 internal sealed class OrderService : IOrderService
 {
 	private readonly AppDbContext _dbContext;
-	public OrderService(AppDbContext dbContext)
+	private readonly ILogger<OrderService> _logger;
+	public OrderService(AppDbContext dbContext, ILogger<OrderService> logger)
 	{
 		_dbContext = dbContext;
+		_logger = logger;
 	}
 
 	public async Task<Result<int>> AddOrder(Order order, CancellationToken cancellationToken)
@@ -37,6 +39,8 @@ internal sealed class OrderService : IOrderService
 			await _dbContext.SaveChangesAsync(cancellationToken);
 
 			await transaction.CommitAsync(cancellationToken);
+			
+			_logger.LogInformation("Order with ID {OrderId} has been successfully added", order.Id);
 
 			return Result<int>.Success(order.Id);
 		}
@@ -48,6 +52,8 @@ internal sealed class OrderService : IOrderService
 		catch (Exception ex)
 		{
 			await transaction.RollbackAsync();
+
+			_logger.LogError(ex, "An error occurred while adding the order with ID {OrderId}", order.Id);
 
 			return Result<int>.Failure(ex.Message);
 		}

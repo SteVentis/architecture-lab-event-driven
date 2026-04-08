@@ -17,10 +17,11 @@ namespace OrderSystem.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    InternalOrderId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     CustomerId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -37,7 +38,8 @@ namespace OrderSystem.Infrastructure.Migrations
                     EventId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EventType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Payload = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SentAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SentAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     MessageStatus = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

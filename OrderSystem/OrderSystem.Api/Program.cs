@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using NLog.Web;
 using OrderSystem.Api.Services;
 using OrderSystem.Infrastructure.Context;
 
@@ -18,6 +19,9 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Progr
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddScoped<IOrderService, OrderService>();
+
+builder.Logging.ClearProviders();
+builder.Host.UseNLog();
 
 
 var app = builder.Build();
