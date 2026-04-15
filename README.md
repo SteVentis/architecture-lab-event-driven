@@ -16,21 +16,26 @@ The system is designed around three main components:
 
 flowchart TD
     client[Client / Frontend] --> api[Order API]
+
     api --> validate[Validate Command]
     validate --> order[Create Order Entity]
     order --> outbox[Create Outbox Message]
     outbox --> tx[(Single Transaction)]
+
     tx --> db[(Orders + Outbox DB)]
+
     db --> publisher[Outbox Publisher Worker]
     publisher --> scan[Scan Pending Outbox Messages]
     scan --> publish[Publish OrderCreated Event]
     publish --> rabbit[(RabbitMQ)]
     publish --> sent[Mark Message as Sent]
+
     rabbit --> processor[Order Processor Worker]
     processor --> consume[Consume Event]
     consume --> processing[Set Order Status = Processing]
     processing --> business[Execute Business Logic]
     business --> completed[Set Order Status = Completed]
+
     completed --> db
     sent --> db
     
