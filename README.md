@@ -14,6 +14,7 @@ The system is designed around three main components:
 
 ## 🔄 Processing Flow
 
+```mermaid
 flowchart TD
     client[Client / Frontend] --> api[Order API]
 
@@ -38,6 +39,7 @@ flowchart TD
 
     completed --> db
     sent --> db
+```
     
 1. The client sends a request to create a new order.
 2. The API validates the request and stores:
