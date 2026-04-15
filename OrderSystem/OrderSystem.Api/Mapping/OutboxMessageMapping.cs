@@ -11,7 +11,7 @@ public static class OutboxMessageMapping
 		EventId = orderCreated.EventId,
 		EventType = nameof(OrderCreated),
 		CreatedAt = orderCreated.CreatedAt,
-		MessageStatus = MessageStatus.NotSent,
+		MessageStatus = OutboxMessageStatus.NotSent,
 		Payload = JsonConvert.SerializeObject(orderCreated)
 	};
 }

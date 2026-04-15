@@ -8,10 +8,10 @@ public class OutboxMessage
 	public string Payload { get; set; } = string.Empty;
 	public DateTime CreatedAt { get; set; }
 	public DateTime? SentAt { get; set; }
-	public MessageStatus MessageStatus { get; set; }
+	public OutboxMessageStatus MessageStatus { get; set; }
 }
 
-public enum MessageStatus
+public enum OutboxMessageStatus
 {
 	Sent,
 	NotSent
