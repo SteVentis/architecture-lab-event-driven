@@ -16,37 +16,14 @@ The system is designed around three main components:
 
 ```mermaid
 flowchart TD
-    client[Client / Frontend] --> api[Order API]
-
-    api --> validate[Validate Command]
-    validate --> order[Create Order Entity]
-    order --> outbox[Create Outbox Message]
-    outbox --> tx[(Single Transaction)]
-
-    tx --> db[(Orders + Outbox DB)]
-
-    db --> publisher[Event Publisher Worker]
-    publisher --> scan[Scan Pending Outbox Messages]
-    scan --> publish[Publish OrderCreated Event]
-    publish --> rabbit[(RabbitMQ)]
-    publish --> sent[Mark Message as Sent]
-
-    rabbit --> processor[Event Processor Worker]
-    processor --> consume[Consume Event]
-    consume --> beginTx[Begin Transaction]
-    beginTx --> inboxLookup{Inbox Message Exists<br/>and Processed?}
-
-    inboxLookup -->|Yes| skip[Skip Duplicate Event]
-    inboxLookup -->|No| createInbox[Create Inbox Message<br/>Status: Received]
-
-    createInbox --> handle[Execute OrderCreated Handler]
-    handle --> markProcessed[Mark Inbox Message as Processed]
-    markProcessed --> commit[Commit Transaction]
-
-    sent --> db
-    createInbox --> db
-    markProcessed --> db
-    commit --> db
+    A[Client Request] --> B[Order API]
+    B --> C[(Orders + Outbox DB)]
+    C --> D[Event Publisher]
+    D --> E[(RabbitMQ)]
+    E --> F[Event Processor]
+    F --> G[Inbox Validation]
+    G --> H[Order Processing]
+    H --> C
 ```
     
 1. The client sends a request to create a new order.
