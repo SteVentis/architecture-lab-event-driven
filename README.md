@@ -21,14 +21,14 @@ flowchart LR
     api -->|Save Order + Outbox| db[(Database)]
 
     db --> publisher[Event Publisher]
-    publisher -->|Read Outbox (Pending)| db
+    publisher -->|Read Outbox Pending| db
     publisher -->|Publish Event| rabbit[(RabbitMQ)]
     publisher -->|Mark as Sent| db
 
     rabbit --> processor[Event Processor]
     processor -->|Check Inbox| db
     processor -->|Process Order| db
-    processor -->|Mark Inbox as Processed| db
+    processor -->|Mark Inbox Processed| db
 ```
     
 1. The client sends a request to create a new order.
