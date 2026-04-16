@@ -36,12 +36,9 @@ flowchart LR
    - The `Order` (with status `Pending`)
    - The `OutboxMessage` (event: `OrderCreated`)
    in the **same database transaction**.
-3. The Outbox Publisher periodically reads unsent messages from the database.
+3. The Event Publisher periodically reads unsent messages from the database.
 4. Each message is published to RabbitMQ and marked as **Sent**.
-5. The Order Processor consumes the event from the queue.
-6. The order is processed and its status transitions:
-   - `Pending → Processing → Completed`
-5. The Order Processor consumes the event from the queue.
+5. The Event Processor consumes the event from the queue.
 6. The event is checked against the **Inbox** to prevent duplicate processing.
 7. The order is processed and its status transitions:
    - `Received → Processed`
