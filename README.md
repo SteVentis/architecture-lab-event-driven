@@ -2,13 +2,13 @@
 
 ## 📌 Architecture Overview
 
-This project demonstrates an **event-driven order processing system** using the **Outbox Pattern** to ensure reliable message delivery.
+This project demonstrates an **event-driven order processing system** using the **Outbox and Inbox Patterns** to ensure reliable message delivery and idempotent processing.
 
 The system is designed around three main components:
 
 - **Order API**: Receives incoming requests and stores both the order and the corresponding event in the database within a single transaction.
-- **Outbox Publisher**: Continuously scans the Outbox table and publishes pending events to RabbitMQ.
-- **Order Processor**: Consumes events from the message queue and executes the business logic, updating the order lifecycle.
+- **Event Publisher**: Continuously scans the Outbox table and publishes pending events to RabbitMQ.
+- **Event Processor**: Consumes events from the message queue, performs idempotency checks using the Inbox Pattern to prevent duplicate processing, executes the business logic, and updates the order lifecycle within a transactional boundary.
 
 ---
 
@@ -25,20 +25,28 @@ flowchart TD
 
     tx --> db[(Orders + Outbox DB)]
 
-    db --> publisher[Outbox Publisher Worker]
+    db --> publisher[Event Publisher Worker]
     publisher --> scan[Scan Pending Outbox Messages]
     scan --> publish[Publish OrderCreated Event]
     publish --> rabbit[(RabbitMQ)]
     publish --> sent[Mark Message as Sent]
 
-    rabbit --> processor[Order Processor Worker]
+    rabbit --> processor[Event Processor Worker]
     processor --> consume[Consume Event]
-    consume --> processing[Set Order Status = Processing]
-    processing --> business[Execute Business Logic]
-    business --> completed[Set Order Status = Completed]
+    consume --> beginTx[Begin Transaction]
+    beginTx --> inboxLookup{Inbox Message Exists<br/>and Processed?}
 
-    completed --> db
+    inboxLookup -->|Yes| skip[Skip Duplicate Event]
+    inboxLookup -->|No| createInbox[Create Inbox Message<br/>Status: Received]
+
+    createInbox --> handle[Execute OrderCreated Handler]
+    handle --> markProcessed[Mark Inbox Message as Processed]
+    markProcessed --> commit[Commit Transaction]
+
     sent --> db
+    createInbox --> db
+    markProcessed --> db
+    commit --> db
 ```
     
 1. The client sends a request to create a new order.
@@ -51,13 +59,17 @@ flowchart TD
 5. The Order Processor consumes the event from the queue.
 6. The order is processed and its status transitions:
    - `Pending → Processing → Completed`
-
+5. The Order Processor consumes the event from the queue.
+6. The event is checked against the **Inbox** to prevent duplicate processing.
+7. The order is processed and its status transitions:
+   - `Received → Processed`
 ---
 
 ## ⚙️ Key Architectural Concepts
 
 - **Event-Driven Architecture**: Services communicate through events instead of direct calls.
 - **Outbox Pattern**: Guarantees that no events are lost during the transaction.
+- **Inbox Pattern**: Ensures idempotent event consumption and prevents duplicate processing.
 - **Asynchronous Processing**: Decouples the API from background processing.
 - **Eventual Consistency**: Data is not immediately consistent but becomes consistent over time.
 
