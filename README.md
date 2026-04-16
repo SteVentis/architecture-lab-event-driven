@@ -41,7 +41,7 @@ flowchart LR
 5. The Event Processor consumes the event from the queue.
 6. The event is checked against the **Inbox** to prevent duplicate processing.
 7. The order is processed and its status transitions:
-   - `Received → Processed`
+   - `Pending → Completed`
 ---
 
 ## ⚙️ Key Architectural Concepts
