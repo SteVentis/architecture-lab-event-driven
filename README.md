@@ -15,15 +15,20 @@ The system is designed around three main components:
 ## 🔄 Processing Flow
 
 ```mermaid
-flowchart TD
-    A[Client Request] --> B[Order API]
-    B --> C[(Orders + Outbox DB)]
-    C --> D[Event Publisher]
-    D --> E[(RabbitMQ)]
-    E --> F[Event Processor]
-    F --> G[Inbox Validation]
-    G --> H[Order Processing]
-    H --> C
+flowchart LR
+    client[Client] --> api[Order API]
+
+    api -->|Save Order + Outbox| db[(Database)]
+
+    db --> publisher[Event Publisher]
+    publisher -->|Read Outbox (Pending)| db
+    publisher -->|Publish Event| rabbit[(RabbitMQ)]
+    publisher -->|Mark as Sent| db
+
+    rabbit --> processor[Event Processor]
+    processor -->|Check Inbox| db
+    processor -->|Process Order| db
+    processor -->|Mark Inbox as Processed| db
 ```
     
 1. The client sends a request to create a new order.
