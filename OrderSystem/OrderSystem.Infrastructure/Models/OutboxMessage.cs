@@ -13,6 +13,6 @@ public class OutboxMessage
 
 public enum OutboxMessageStatus
 {
-	Sent,
-	NotSent
+	NotSent = 0,
+	Sent = 1
 }

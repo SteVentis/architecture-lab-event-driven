@@ -23,10 +23,16 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Logging.ClearProviders();
 builder.Host.UseNLog();
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
+app.UseSwagger();
+
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 

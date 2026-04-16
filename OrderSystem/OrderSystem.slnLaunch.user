@@ -1,0 +1,22 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "OrderSystem.Api\\OrderSystem.Api.csproj",
+        "Action": "Start",
+        "DebugTarget": "IIS Express"
+      },
+      {
+        "Path": "OrderSystem.EventPublisher\\OrderSystem.EventPublisher.csproj",
+        "Action": "Start",
+        "DebugTarget": "OrderSystem.EventPublisher"
+      },
+      {
+        "Path": "OrderSystem.EventProcessor\\OrderSystem.EventProcessor.csproj",
+        "Action": "Start",
+        "DebugTarget": "OrderSystem.EventProcessor"
+      }
+    ]
+  }
+]

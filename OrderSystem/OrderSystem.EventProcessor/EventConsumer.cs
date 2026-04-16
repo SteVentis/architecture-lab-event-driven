@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using OrderSystem.Contracts.Events;
@@ -97,7 +98,7 @@ public class EventConsumer : BackgroundService
 
 		await using var transaction = await dbcontext.Database.BeginTransactionAsync(stoppingToken);
 
-		var existingMessage = await dbcontext.InboxMessages.FindAsync(orderCreatedEvent.EventId);
+		var existingMessage = await dbcontext.InboxMessages.FirstOrDefaultAsync(inboxMessage => inboxMessage.EventId == orderCreatedEvent.EventId, stoppingToken);
 
 		if (existingMessage is not null && existingMessage.ProcessedAt.HasValue)
 		{

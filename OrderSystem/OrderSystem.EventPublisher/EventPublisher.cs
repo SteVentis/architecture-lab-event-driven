@@ -1,5 +1,6 @@
 using OrderSystem.Infrastructure.Context;
 using OrderSystem.Infrastructure.Models;
+using OrderSystem.Messaging.Configuration;
 using OrderSystem.Messaging.Connection;
 using OrderSystem.Messaging.Publisher;
 
@@ -39,6 +40,8 @@ public class EventPublisher : BackgroundService
 			{
 				_logger.LogError(ex, "Error in outbox processing loop");
 			}
+
+			_logger.LogInformation("Publisher is Ready  ");
 
 			await Task.Delay(TimeSpan.FromSeconds(2), stoppingToken);
 		}

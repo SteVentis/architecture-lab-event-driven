@@ -4,13 +4,13 @@ using OrderSystem.Messaging.Topology;
 
 namespace OrderSystem.Messaging;
 
-internal class RabbitMqStartupInitializer : IHostedService
+internal sealed class RabbitMqStartupInitializer : IHostedService
 {
 	private readonly IRabbitMqConnectionProvider _connectionProvider;
 	private readonly IRabbitMqTopologyInitializer _topologyInitializer;
 
 	public RabbitMqStartupInitializer(
-		IRabbitMqConnectionProvider connectionProvider, 
+		IRabbitMqConnectionProvider connectionProvider,
 		IRabbitMqTopologyInitializer topologyInitializer)
 	{
 		_connectionProvider = connectionProvider;
@@ -19,7 +19,9 @@ internal class RabbitMqStartupInitializer : IHostedService
 
 	public async Task StartAsync(CancellationToken cancellationToken)
 	{
+
 		var connection = await _connectionProvider.GetConnectionAsync(cancellationToken);
+
 
 		await _topologyInitializer.InitializeAsync(connection, cancellationToken);
 	}

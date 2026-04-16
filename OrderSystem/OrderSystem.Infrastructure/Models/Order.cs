@@ -13,9 +13,7 @@ public class Order
 
 public enum Status
 {
-	Created,
 	Pending,
 	Processing,
 	Completed,
-	Cancelled
 }

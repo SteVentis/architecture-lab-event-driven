@@ -1,5 +1,6 @@
 using NLog.Extensions.Logging;
 using OrderSystem.EventProcessor;
+using OrderSystem.EventProcessor.Handlers;
 using OrderSystem.Infrastructure.Context;
 using OrderSystem.Messaging;
 
@@ -9,6 +10,8 @@ builder.Services.SetupMessaging(settings =>
 {
 	builder.Configuration.GetSection("RabbitMqSettings").Bind(settings);
 });
+
+builder.Services.AddScoped<IOrderCreatedEventHandler, OrderCreatedEventHandler>();
 
 builder.Services.AddSqlServer<AppDbContext>(builder.Configuration.GetConnectionString("DefaultConnection"));
 
